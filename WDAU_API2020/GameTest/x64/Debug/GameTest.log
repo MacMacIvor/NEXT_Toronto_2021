@@ -1,0 +1,12 @@
+﻿  stdafx.cpp
+  app.cpp
+  main.cpp
+  SimpleController.cpp
+  SimpleSound.cpp
+  SimpleSprite.cpp
+  TextureLoader.cpp
+  GameTest.cpp
+  Generating Code...
+  GameTest.vcxproj -> C:\Users\Shadow\Documents\GameJam\NEXT_API2021\WDAU_API2020\x64\Debug\GameTest.exe
+  C:\Users\Shadow\Documents\GameJam\NEXT_API2021\WDAU_API2020\\GameTest\glut\bin\x64\freeglut.dll
+  1 File(s) copied
