@@ -91,6 +91,7 @@
     <ClInclude Include="wave.h">
       <Filter>createdScripts</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -102,5 +103,12 @@
     <Filter Include="createdScripts">
       <UniqueIdentifier>{3fbf390e-e2da-435e-856d-fb07df8dd64d}</UniqueIdentifier>
     </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="GameTest.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\..\..\NEXT_Toronto_2021_Programming_MacMacIvor\Pic.PNG" />
+    <Image Include="..\..\..\NEXT_Toronto_2021_Programming_MacMacIvor\favicon.ico" />
   </ItemGroup>
 </Project>
