@@ -13,7 +13,9 @@
 // Eample data....
 //------------------------------------------------------------------------
 CSimpleSprite *testSprite;
-CSimpleSprite *testSprite2;
+CSimpleSprite* testSprite2;
+CSimpleSprite* testSprite3;
+CSimpleSprite* testSprite4;
 enum
 {
 	ANIM_FORWARDS,
@@ -26,101 +28,108 @@ enum
 //------------------------------------------------------------------------
 // Called before first update. Do any initial setup here.
 //------------------------------------------------------------------------
+
+enum gameState {
+	START,
+	PLAY,
+	END
+};
+
+static gameState stateOfGame = START;
+
 void Init()
 {
-	//------------------------------------------------------------------------
-	// Example Sprite Code....
 	
-
-	testSprite = App::CreateSprite(".\\TestData\\Test.bmp", 8, 4);
-	testSprite->SetPosition(400.0f, 400.0f);
-	float speed = 1.0f / 15.0f;
-	testSprite->CreateAnimation(ANIM_BACKWARDS, speed, { 0,1,2,3,4,5,6,7 });
-	testSprite->CreateAnimation(ANIM_LEFT, speed, { 8,9,10,11,12,13,14,15 });
-	testSprite->CreateAnimation(ANIM_RIGHT, speed, { 16,17,18,19,20,21,22,23 });
-	testSprite->CreateAnimation(ANIM_FORWARDS, speed, { 24,25,26,27,28,29,30,31 });
-	testSprite->SetScale(2.0f);
-
-	testSprite2 = App::CreateSprite(".\\TestData\\Ships.bmp", 2, 12);
-	testSprite2->SetPosition(400.0f, 400.0f);	
-	testSprite2->SetFrame(2);
-	testSprite2->SetScale(1.0f);
-	//------------------------------------------------------------------------
+	enemyManager::Get()._BuildAll();
 }
-
 //------------------------------------------------------------------------
 // Update your simulation here. deltaTime is the elapsed time since the last update in ms.
 // This will be called at no greater frequency than the value of APP_MAX_FRAME_RATE
 //------------------------------------------------------------------------
 void Update(float deltaTime)
 {
-	//------------------------------------------------------------------------
-	// Example Sprite Code....
-	testSprite->Update(deltaTime);
-	testSprite2->Update(deltaTime);
-	if (App::GetController().GetLeftThumbStickX() > 0.5f)
-	{
-		testSprite->SetAnimation(ANIM_RIGHT);
-		float x, y;
-		testSprite->GetPosition(x, y);
-		x += 1.0f;
-		testSprite->SetPosition(x, y);
+	static wave waveController;
+	static bool onDownL = false;
+	static bool onDownR = false;
+	static float mousePos[2];
+	static POINT p;
+
+	switch (stateOfGame) {
+	case START:
+		if (App::IsKeyPressed(VK_RETURN)) {
+			stateOfGame = PLAY;
+		}
+		break;
+	case PLAY:
+		//------------------------------------------------------------------------
+		// Example Sprite Code....
+		enemyManager::Get().Update(deltaTime);
+		
+		if (App::IsKeyPressed(VK_RBUTTON)) {
+			if (onDownR != true) {
+				enemyManager::Get().changeSelectedUI();
+			}
+			onDownR = true;
+		}
+		else {
+			onDownR = false;
+		}
+		if (App::IsKeyPressed(VK_LBUTTON)) {
+			if (onDownL != true) {
+				App::GetMousePos(mousePos[0], mousePos[1]);
+				switch (enemyManager::Get().getSelectedUI()) {
+				case 0:
+					enemyManager::Get().modMoney(-75);
+					if (!(enemyManager::Get().getMoney() < 0))
+						enemyManager::Get().getEnemyTowerToSpawn(mousePos[0], mousePos[1], 0);
+					else {
+						enemyManager::Get().modMoney(75); //Can't buy
+					}
+					break;
+				case 1:
+					enemyManager::Get().modMoney(-125);
+					if (!(enemyManager::Get().getMoney() < 0))
+						enemyManager::Get().getEnemyTowerToSpawn(mousePos[0], mousePos[1], 1);
+					else {
+						enemyManager::Get().modMoney(125); //Can't buy
+					}
+					break;
+				case 2:
+					enemyManager::Get().modMoney(-175);
+					if (!(enemyManager::Get().getMoney() < 0))
+						enemyManager::Get().getEnemyTowerToSpawn(mousePos[0], mousePos[1], 2);
+					else {
+						enemyManager::Get().modMoney(175); //Can't buy
+					}
+					break;
+				case 3:
+					enemyManager::Get().modMoney(-550);
+					if (!(enemyManager::Get().getMoney() < 0))
+						enemyManager::Get().getEnemyTowerToSpawn(mousePos[0], mousePos[1], 3);
+					else {
+						enemyManager::Get().modMoney(550); //Can't buy
+					}
+					break;
+				}
+
+			}
+			onDownL = true;
+		}
+		else {
+			onDownL = false;
+		}
+
+		waveController.spawn(deltaTime);
+		if (enemyManager::Get().getHealth() <= 0) {
+			stateOfGame = END;
+		}
+		break;
+	case END:
+		exit(1);
+		break;
 	}
-	if (App::GetController().GetLeftThumbStickX() < -0.5f)
-	{
-		testSprite->SetAnimation(ANIM_LEFT);
-		float x, y;
-		testSprite->GetPosition(x, y);
-		x -= 1.0f;
-		testSprite->SetPosition(x, y);
-	}
-	if (App::GetController().GetLeftThumbStickY() > 0.5f)
-	{
-		testSprite->SetAnimation(ANIM_FORWARDS);
-		float x, y;
-		testSprite->GetPosition(x, y);
-		y += 1.0f;
-		testSprite->SetPosition(x, y);
-	}
-	if (App::GetController().GetLeftThumbStickY() < -0.5f)
-	{
-		testSprite->SetAnimation(ANIM_BACKWARDS);
-		float x, y;
-		testSprite->GetPosition(x, y);
-		y -= 1.0f;
-		testSprite->SetPosition(x, y);
-	}
-	if (App::GetController().CheckButton(XINPUT_GAMEPAD_DPAD_UP, false))
-	{
-		testSprite->SetScale(testSprite->GetScale() + 0.1f);
-	}
-	if (App::GetController().CheckButton(XINPUT_GAMEPAD_DPAD_DOWN, false))
-	{
-		testSprite->SetScale(testSprite->GetScale() - 0.1f);
-	}
-	if (App::GetController().CheckButton(XINPUT_GAMEPAD_DPAD_LEFT, false))
-	{
-		testSprite->SetAngle(testSprite->GetAngle() + 0.1f);
-	}
-	if (App::GetController().CheckButton(XINPUT_GAMEPAD_DPAD_RIGHT, false))
-	{
-		testSprite->SetAngle(testSprite->GetAngle() - 0.1f);
-	}
-	if (App::GetController().CheckButton(XINPUT_GAMEPAD_A, true))
-	{
-		testSprite->SetAnimation(-1);
-	}
-	if (App::GetController().CheckButton(XINPUT_GAMEPAD_B, true))
-	{
-		testSprite->SetVertex(0, testSprite->GetVertex(0) + 5.0f);
-	}
-	//------------------------------------------------------------------------
-	// Sample Sound.
-	//------------------------------------------------------------------------
-	if (App::GetController().CheckButton(XINPUT_GAMEPAD_B, true))
-	{
-		App::PlaySound(".\\TestData\\Test.wav");
-	}
+	
+
 }
 
 //------------------------------------------------------------------------
@@ -129,38 +138,134 @@ void Update(float deltaTime)
 //------------------------------------------------------------------------
 void Render()
 {	
+	char sentence[] = "Selected tower =  ";
+	int selected;
+	char sentence2[] = "Current money: 00000";
+	int tempMoney;
+	int index;
+	char sentence3[] = "Current health: 000";
+	int temphealth;
+	int index2;
+	int d;
+	switch (stateOfGame) {
+	case START:
+		App::Print(700, 700, "PressEnterToStart");
 
-	//------------------------------------------------------------------------
-	// Example Line Drawing.
-	//------------------------------------------------------------------------
-	static float a = 0.0f;
-	float r = 1.0f;
-	float g = 1.0f;
-	float b = 1.0f;
-	a += 0.1f;
-	for (int i = 0; i < 20; i++)
-	{
-
-		float sx = 200 + sinf(a + i * 0.1f)*60.0f;
-		float sy = 200 + cosf(a + i * 0.1f)*60.0f;
-		float ex = 700 - sinf(a + i * 0.1f)*60.0f;
-		float ey = 700 - cosf(a + i * 0.1f)*60.0f;
-		g = (float)i / 20.0f;
-		b = (float)i / 20.0f;
-		App::DrawLine(sx, sy, ex, ey,r,g,b);
+		break;
+	case PLAY:
+		enemyManager::Get().Render();
+		
+		
+		selected = enemyManager::Get().getSelectedUI();
+		switch (selected) {
+	case 0:
+		sentence[17] = '1';
+		break;
+	case 1:
+		sentence[17] = '2';
+		break;
+	case 2:
+		sentence[17] = '3';
+		break;
+	case 3:
+		sentence[17] = '4';
+		break;
 	}
+		tempMoney = enemyManager::Get().getMoney();
+		index = 19;
+		do {
+		if (index != 19) {
+			tempMoney /= 10;
+		}
+		int d = tempMoney % 10;
+		switch (d) {
+		case 1:
+			sentence2[index] = '1';
+			break;
+		case 2:
+			sentence2[index] = '2';
+			break;
+		case 3:
+			sentence2[index] = '3';
+			break;
+		case 4:
+			sentence2[index] = '4';
+			break;
+		case 5:
+			sentence2[index] = '5';
+			break;
+		case 6:
+			sentence2[index] = '6';
+			break;
+		case 7:
+			sentence2[index] = '7';
+			break;
+		case 8:
+			sentence2[index] = '8';
+			break;
+		case 9:
+			sentence2[index] = '9';
+			break;
+		case 0:
+			sentence2[index] = '0';
+			break;
+		}
+		index--;
+	} while (tempMoney >= 10);
 
-	//------------------------------------------------------------------------
-	// Example Sprite Code....
-	testSprite->Draw();
-	testSprite2->Draw();
-	//------------------------------------------------------------------------
+		temphealth = enemyManager::Get().getHealth();
+		index2 = 18;
+		do {
+		if (index2 != 18) {
+			temphealth /= 10;
+		}
+		d = temphealth % 10;
+		switch (d) {
+		case 1:
+			sentence3[index2] = '1';
+			break;
+		case 2:
+			sentence3[index2] = '2';
+			break;
+		case 3:
+			sentence3[index2] = '3';
+			break;
+		case 4:
+			sentence3[index2] = '4';
+			break;
+		case 5:
+			sentence3[index2] = '5';
+			break;
+		case 6:
+			sentence3[index2] = '6';
+			break;
+		case 7:
+			sentence3[index2] = '7';
+			break;
+		case 8:
+			sentence3[index2] = '8';
+			break;
+		case 9:
+			sentence3[index2] = '9';
+			break;
+		case 0:
+			sentence3[index2] = '0';
+			break;
+		}
+		index2--;
+	} while (temphealth >= 10);
 
-	//------------------------------------------------------------------------
-	// Example Text.
-	//------------------------------------------------------------------------
-	App::Print(100, 100, "Sample Text");
+		App::Print(30, 550, sentence);
+		App::Print(30, 535, "RightClick to change selection");
+		App::Print(30, 520, "Costs are 75, 125, 175, 550");
+		App::Print(30, 505, sentence2);
+		App::Print(30, 490, sentence3);
 
+		break;
+	case END:
+
+		break;
+	}
 }
 //------------------------------------------------------------------------
 // Add your shutdown code here. Called when the APP_QUIT_KEY is pressed.

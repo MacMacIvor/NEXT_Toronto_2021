@@ -23,6 +23,24 @@
     <ClCompile Include="App\TextureLoader.cpp">
       <Filter>API</Filter>
     </ClCompile>
+    <ClCompile Include="objectPooling.cpp">
+      <Filter>createdScripts</Filter>
+    </ClCompile>
+    <ClCompile Include="enemyBehaviour.cpp">
+      <Filter>createdScripts</Filter>
+    </ClCompile>
+    <ClCompile Include="bullet.cpp">
+      <Filter>createdScripts</Filter>
+    </ClCompile>
+    <ClCompile Include="towers.cpp">
+      <Filter>createdScripts</Filter>
+    </ClCompile>
+    <ClCompile Include="UI.cpp">
+      <Filter>createdScripts</Filter>
+    </ClCompile>
+    <ClCompile Include="wave.cpp">
+      <Filter>createdScripts</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App\app.h">
@@ -52,6 +70,27 @@
     <ClInclude Include="App\TextureLoader.h">
       <Filter>API</Filter>
     </ClInclude>
+    <ClInclude Include="objectPooling.h">
+      <Filter>createdScripts</Filter>
+    </ClInclude>
+    <ClInclude Include="enemyBehaviour.h">
+      <Filter>createdScripts</Filter>
+    </ClInclude>
+    <ClInclude Include="maps.h">
+      <Filter>createdScripts</Filter>
+    </ClInclude>
+    <ClInclude Include="towers.h">
+      <Filter>createdScripts</Filter>
+    </ClInclude>
+    <ClInclude Include="UI.h">
+      <Filter>createdScripts</Filter>
+    </ClInclude>
+    <ClInclude Include="bullet.h">
+      <Filter>createdScripts</Filter>
+    </ClInclude>
+    <ClInclude Include="wave.h">
+      <Filter>createdScripts</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -59,6 +98,9 @@
   <ItemGroup>
     <Filter Include="API">
       <UniqueIdentifier>{3e1485bf-3449-4966-8760-976ee866544b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="createdScripts">
+      <UniqueIdentifier>{3fbf390e-e2da-435e-856d-fb07df8dd64d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
